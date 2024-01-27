@@ -9,4 +9,4 @@ import { Location, LocationSchema } from './location.model';
   controllers: [LocationController],
   providers: [LocationService],
 })
-export class LocationModule {}
+export class LocationModule { }

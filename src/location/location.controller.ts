@@ -4,7 +4,7 @@ import { Location } from './location.model';
 
 @Controller('locations')
 export class LocationController {
-  constructor(private readonly locationService: LocationService) {}
+  constructor(private readonly locationService: LocationService) { }
 
   @Post()
   create(@Body() location: Location): Promise<Location> {
