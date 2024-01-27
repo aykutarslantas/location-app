@@ -51,7 +51,7 @@ export class LocationService {
   }
 
   private calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
-    // https://medium.com/@sddkal/koordinatlar-aras%C4%B1-uzakl%C4%B1k-hesab%C4%B1-i%C3%A7in-haversine-fonksiyonu-982d90c550bf
+    // haversine-fonksiyonu
     const R = 6371;
 
     const dLat = this.deg2rad(lat2 - lat1);
