@@ -1,14 +1,16 @@
-import { Controller, Get, Post, Param, Body, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, Put, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
 import { LocationService } from './location.service';
 import { Location } from './location.model';
+import { LocationDto } from './dto/location.dto';
 
 @Controller('locations')
 export class LocationController {
   constructor(private readonly locationService: LocationService) { }
 
   @Post()
-  create(@Body() location: Location): Promise<Location> {
-    return this.locationService.create(location);
+  @UsePipes(new ValidationPipe({ transform: true }))
+  create(@Body() locationDto: LocationDto): Promise<Location> {
+    return this.locationService.create(locationDto);
   }
 
   @Get()
@@ -22,13 +24,13 @@ export class LocationController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() location: Location): Promise<Location> {
-    return this.locationService.update(id, location);
+  @UsePipes(new ValidationPipe({ transform: true }))
+  update(@Param('id') id: string, @Body() updateLocationDto: LocationDto): Promise<Location> {
+    return this.locationService.update(id, updateLocationDto);
   }
 
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<Location> {
-    const result = await this.locationService.remove(id);
-    return result;
+    return this.locationService.remove(id);
   }
 }

@@ -1,0 +1,135 @@
+{
+	"info": {
+		"_postman_id": "75fda889-291e-4a90-8927-a25cb1c85690",
+		"name": "location-app",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12913538"
+	},
+	"item": [
+		{
+			"name": "Konum Ekleme Uç noktası",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"test\", \r\n    \"latitude\": 88.7128, \r\n    \"longitude\": -88.0060,\r\n    \"marker\": \"F0F0F0\"\r\n    }"
+				},
+				"url": {
+					"raw": "http://localhost:3000/locations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"locations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Konumları Listeleme Uç Noktası",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/locations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"locations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Konum Detayı Uç Noktasi",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/locations/65b69a809d0814eed383835a",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"locations",
+						"65b69a809d0814eed383835a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Konum Düzenleme Sayfası",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Updated Location\", \r\n    \"latitude\": 41.8781, \r\n    \"longitude\": -87.6298,\r\n    \"marker\": \"F1FFFF\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/locations/65b69a809d0814eed383835a",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"locations",
+						"65b69a809d0814eed383835a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Rotalama Uç Noktası",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Bağcılar\", \r\n    \"latitude\": 40.7128, \r\n    \"longitude\": -88.0060,\r\n    \"marker\": \"F0F0F0\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/locations/routes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"locations",
+						"routes"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
