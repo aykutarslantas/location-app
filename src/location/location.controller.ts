@@ -33,4 +33,16 @@ export class LocationController {
   async remove(@Param('id') id: string): Promise<Location> {
     return this.locationService.remove(id);
   }
+
+
+  @Post('routes')
+  async findClosestLocations(@Body() locationDto: LocationDto): Promise<any[]> {
+      
+      const { latitude, longitude } = locationDto;
+
+      const closestLocations = await this.locationService.findClosestLocations(latitude, longitude);
+
+      return closestLocations;
+  }
+
 }

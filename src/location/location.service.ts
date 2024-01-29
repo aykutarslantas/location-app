@@ -2,11 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Location, LocationDocument } from './location.model';
+import { GeoHelper } from '../helpers/geo.helper';
 
 
 interface LocationDistance {
   name: string;
   distance: number;
+  latitude: number;
+  longitude: number;
 }
 
 @Injectable()
@@ -33,47 +36,54 @@ export class LocationService {
   async remove(id: string): Promise<Location> {
     const result = await this.locationModel.deleteOne({ _id: id }).exec();
 
-    if (result.deletedCount === 1) {
-      return this.locationModel.findById(id).exec();
-    } else {
-      throw new NotFoundException('Location not found or could not be deleted');
-    }
+    if (result.deletedCount) return this.locationModel.findById(id).exec();
+
+    throw new NotFoundException('Location not found or could not be deleted');
   }
 
   async findClosestLocations(latitude: number, longitude: number): Promise<LocationDistance[]> {
+
     const allLocations = await this.locationModel.find().exec();
+    let currentLatitude = latitude;
+    let currentLongitude = longitude;
+    const visitedLocations = new Set<string>();
+    const route: LocationDistance[] = [];
 
-    const sortedLocations = allLocations.sort((a, b) => {
-      const distanceToA = this.calculateDistance(latitude, longitude, a.latitude, a.longitude);
-      const distanceToB = this.calculateDistance(latitude, longitude, b.latitude, b.longitude);
-      return distanceToA - distanceToB;
-    });
+    while (route.length < allLocations.length) {
+      const closest = this.findClosestUnvisitedLocation(currentLatitude, currentLongitude, allLocations, visitedLocations);
+      if (!closest) {
+        break;
+      }
 
-    return sortedLocations.map(location => ({
-      name: location.name,
-      distance: this.calculateDistance(latitude, longitude, location.latitude, location.longitude)
-    }));
+      route.push(closest);
+      visitedLocations.add(closest.name);
+      currentLatitude = closest.latitude;
+      currentLongitude = closest.longitude;
+    }
+
+    return route;
+
   }
 
-  private calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
-    // haversine-fonksiyonu
-    const R = 6371;
+  private findClosestUnvisitedLocation(currentLatitude: number, currentLongitude: number, locations: LocationDocument[], visitedLocations: Set<string>): LocationDistance | null {
+    let closestDistance = Number.MAX_VALUE;
+    let closestLocation: LocationDistance | null = null;
 
-    const dLat = this.deg2rad(lat2 - lat1);
-    const dLon = this.deg2rad(lon2 - lon1);
+    for (const location of locations) {
+      if (!visitedLocations.has(location._id.toString())) {
+        const distance = GeoHelper.calculateDistance(currentLatitude, currentLongitude, location.latitude, location.longitude);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestLocation = {
+            name: location.name,
+            distance: distance,
+            latitude: location.latitude,
+            longitude: location.longitude
+          };
+        }
+      }
+    }
 
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
-
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c;
-
-    return distance;
-  }
-
-  private deg2rad(deg: number): number {
-    return deg * (Math.PI / 180);
+    return closestLocation;
   }
 }

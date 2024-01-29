@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { LocationModule } from './location/location.module';
-import { RouteController } from './location/route.controller';
 import { LocationController } from './location/location.controller';
 import { LocationService } from './location/location.service';
 import { Location, LocationSchema } from './location/location.model';
@@ -13,7 +12,6 @@ import * as mongoose from 'mongoose';
 mongoose.set('debug', true);
 @Module({
   imports: [
-    //MongooseModule.forRoot('mongodb://root:pass12345@mongodb:27017/location?serverSelectionTimeoutMS=2000&authSource=admin'),
     MongooseModule.forRoot(process.env.MONGODB_URL),
     MongooseModule.forFeature([{ name: Location.name, schema: LocationSchema }]),
     LocationModule,
@@ -22,7 +20,7 @@ mongoose.set('debug', true);
       limit: 10,
     }])
   ],
-  controllers: [LocationController, RouteController],
+  controllers: [LocationController],
   providers: [
     {
       provide: APP_GUARD,
