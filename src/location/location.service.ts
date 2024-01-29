@@ -3,6 +3,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Location, LocationDocument } from './location.model';
 
+
+interface LocationDistance {
+  name: string;
+  distance: number;
+}
+
 @Injectable()
 export class LocationService {
   constructor(@InjectModel(Location.name) private readonly locationModel: Model<LocationDocument>) { }
@@ -34,8 +40,7 @@ export class LocationService {
     }
   }
 
-
-  async findClosestLocations(latitude: number, longitude: number): Promise<any[]> {
+  async findClosestLocations(latitude: number, longitude: number): Promise<LocationDistance[]> {
     const allLocations = await this.locationModel.find().exec();
 
     const sortedLocations = allLocations.sort((a, b) => {
