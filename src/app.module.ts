@@ -8,7 +8,6 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import * as mongoose from 'mongoose';
 
-
 mongoose.set('debug', true);
 @Module({
   imports: [
