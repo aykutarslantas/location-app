@@ -3,14 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Location, LocationDocument } from './location.model';
 import { GeoHelper } from '../helpers/geo.helper';
-
-
-interface LocationDistance {
-  name: string;
-  distance: number;
-  latitude: number;
-  longitude: number;
-}
+import { LocationTypes } from '../interfaces/locationTypes';
 
 @Injectable()
 export class LocationService {
@@ -41,13 +34,13 @@ export class LocationService {
     throw new NotFoundException('Location not found or could not be deleted');
   }
 
-  async findClosestLocations(latitude: number, longitude: number): Promise<LocationDistance[]> {
+  async findClosestLocations(latitude: number, longitude: number): Promise<LocationTypes[]> {
 
     const allLocations = await this.locationModel.find().exec();
     let currentLatitude = latitude;
     let currentLongitude = longitude;
     const visitedLocations = new Set<string>();
-    const route: LocationDistance[] = [];
+    const route: LocationTypes[] = [];
 
     while (route.length < allLocations.length) {
       const closest = this.findClosestUnvisitedLocation(currentLatitude, currentLongitude, allLocations, visitedLocations);
@@ -65,9 +58,9 @@ export class LocationService {
 
   }
 
-  private findClosestUnvisitedLocation(currentLatitude: number, currentLongitude: number, locations: LocationDocument[], visitedLocations: Set<string>): LocationDistance | null {
+  private findClosestUnvisitedLocation(currentLatitude: number, currentLongitude: number, locations: LocationDocument[], visitedLocations: Set<string>): LocationTypes | null {
     let closestDistance = Number.MAX_VALUE;
-    let closestLocation: LocationDistance | null = null;
+    let closestLocation: LocationTypes | null = null;
 
     for (const location of locations) {
       if (!visitedLocations.has(location._id.toString())) {

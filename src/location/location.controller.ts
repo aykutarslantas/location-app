@@ -2,6 +2,7 @@ import { Controller, Get, Post, Param, Body, Put, Delete, UsePipes, ValidationPi
 import { LocationService } from './location.service';
 import { Location } from './location.model';
 import { LocationDto } from './dto/location.dto';
+import { LocationTypes } from '../interfaces/locationTypes';
 
 @Controller('locations')
 export class LocationController {
@@ -36,7 +37,7 @@ export class LocationController {
 
 
   @Post('routes')
-  async findClosestLocations(@Body() locationDto: LocationDto): Promise<any[]> {
+  async findClosestLocations(@Body() locationDto: LocationDto): Promise<LocationTypes[]> {
       
       const { latitude, longitude } = locationDto;
 
